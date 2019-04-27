@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">Zavrsni</string>
+    <string name="never_show_this_again">Never show this again</string>
+    <string name="ok">Ok</string>
+    <string name="game_explanation">The goal of the game is to create a maze with 15 pieces of food, 3 bombs and any
+        number of walls. The algorithm then tries to programm the ant to complete the maze. The ant can only see
+        directly in front of it, can only move forward and rotate by 90 degrees in any direction. If the ant reaches a
+        bomb it dies. If eats all the pieces of food in a limited number of steps (100) it wins. At the end of the
+        calculation you are given the time it took for the algorithm to crack the maze.
+    </string>
+    <string name="see_result">See Result</string>
+</resources>
