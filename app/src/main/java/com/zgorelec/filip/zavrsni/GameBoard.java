@@ -31,11 +31,34 @@ public class GameBoard {
     public GameButton[][] getGameBoardCells() {
         return gameBoardCells;
     }
+    public void disableGameBoard(){
+        changeStateOfButtons(false);
+    }
+
+    public void enableGameBoard(){
+        changeStateOfButtons(true);
+    }
+    private void changeStateOfButtons(boolean state){
+        for (GameButton[] row:gameBoardCells) {
+            for (GameButton button : row) {
+                button.setEnabled(state);
+            }
+        }
+    }
     public int getXDim(){
         return 20;
     }
     public int getYDim(){
         return 9;
+    }
+
+    public void emptyBoard() {
+        for (GameButton[] row:gameBoardCells) {
+            for (GameButton button : row) {
+                button.setState("openField");
+            }
+        }
+        gameBoardCells[0][0].setState("antRight");
     }
 }
 

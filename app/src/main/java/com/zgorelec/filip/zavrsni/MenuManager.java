@@ -27,8 +27,17 @@ public class MenuManager {
         ((MenuButtonCounting)menu.getBoardManagingButtons().get(state)).incrementCount();
     }
 
+    public void resetButtonCounters(){
+        ((MenuButtonCounting)menu.getBoardManagingButtons().get("food")).setCount(15);
+        ((MenuButtonCounting)menu.getBoardManagingButtons().get("bomb")).setCount(3);
+    }
+
     public void decrementButtonValue(String state){
         ((MenuButtonCounting)menu.getBoardManagingButtons().get(state)).decrementCount();
+    }
+
+    public ManagingMenu getMenu() {
+        return menu;
     }
 
     public String getActiveState() {

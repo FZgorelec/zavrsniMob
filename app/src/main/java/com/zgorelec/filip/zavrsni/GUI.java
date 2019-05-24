@@ -9,9 +9,11 @@ import android.widget.*;
 public class GUI {
     private Context context;
     private BoardManager boardManager;
+    private MenuManager menuManager;
     public GUI(Context context) {
         this.context = context;
     }
+
 
     public void init() {
         ManagingMenu managingMenu=new ManagingMenu(context);
@@ -29,9 +31,11 @@ public class GUI {
         table.addView(managingMenu.initManagingTR());
         linearLayout.addView(table);
         ((Activity) context).setContentView(linearLayout);
-        MenuManager menuManager=new MenuManager(managingMenu);
+        menuManager=new MenuManager(managingMenu);
         boardManager=new BoardManager(gameBoard, menuManager);
-        managingMenu.getCalculationButton().setOnClickListener((v)->((Activity) context).runOnUiThread(()->boardManager.moveAnt(new String[]{"moveForward","rotateRight","moveForward","rotateLeft","moveForward","moveForward","rotateRight","moveForward","moveForward","rotateLeft","moveForward","moveForward","rotateRight","rotateRight","moveForward",})));
+    }
+    public MenuManager getMenuManager() {
+        return menuManager;
     }
 
     public BoardManager getBoardManager() {

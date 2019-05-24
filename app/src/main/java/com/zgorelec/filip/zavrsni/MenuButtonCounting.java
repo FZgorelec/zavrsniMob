@@ -27,6 +27,11 @@ public class MenuButtonCounting extends MenuButton {
         count--;
         updateCount();
     }
+
+    public void setCount(int count){
+        this.count=count;
+        updateCount();
+    }
     private void updateCount(){
         this.setText(state +": " +count);
     }

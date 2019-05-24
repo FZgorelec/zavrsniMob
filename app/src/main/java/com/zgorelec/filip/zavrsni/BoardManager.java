@@ -52,6 +52,22 @@ public class BoardManager {
         return boardState;
     }
 
+    public void fillMap(String[][] map) {
+        GameButton[][] gameBoardCells = gameBoard.getGameBoardCells();
+        int gameBoardHeight = gameBoardCells.length;
+        int gameBoardWidth = gameBoardCells[0].length;
+        for (int i = 0; i < gameBoardHeight; i++) {
+            for (int j = 0; j < gameBoardWidth; j++) {
+                gameBoardCells[i][j].setState(map[i][j]);
+            }
+        }
+    }
+
+    public void emptyBoard(){
+        gameBoard.emptyBoard();
+        resetCounters();
+    }
+
     public void moveAnt(String[] moves){
         int antPositionX=0;
         int antPositionY=0;
@@ -140,5 +156,11 @@ public class BoardManager {
                 });
             }
         }
+    }
+
+    public void resetCounters(){
+        menuManager.resetButtonCounters();
+        numberOfBombs=0;
+        numberOfFood=0;
     }
 }

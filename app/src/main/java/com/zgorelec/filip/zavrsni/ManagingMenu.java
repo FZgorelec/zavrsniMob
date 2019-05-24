@@ -75,6 +75,21 @@ public class ManagingMenu {
         return boardManagingButtons;
     }
 
+    public void disableManagingMenu(){
+        changeStateOfButtons(false);
+    }
+
+    public void enableManagingMenu(){
+        changeStateOfButtons(true);
+    }
+    private void changeStateOfButtons(boolean state){
+        for (MenuButton button:boardManagingButtons.values()) {
+            button.setEnabled(state);
+        }
+        calculationButton.setEnabled(state);
+        aboutButton.setEnabled(state);
+    }
+
     public void updateBoardManagmentButtons(Button button) {
         for (Button managmentButton:boardManagingButtons.values()) {
             managmentButton.setTypeface(null, Typeface.NORMAL);

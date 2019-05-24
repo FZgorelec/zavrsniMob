@@ -14,13 +14,13 @@ import android.widget.*;
 
 public class MainActivity extends AppCompatActivity {
     GUI gui;
-    public static final String MY_PREFS_NAME = "Preferences";
+    public static final String MY_PREFS = "Preferences";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
-        SharedPreferences prefs = getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE);
-        SharedPreferences.Editor editor = getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE).edit();
+        SharedPreferences prefs = getSharedPreferences(MY_PREFS, MODE_PRIVATE);
+        SharedPreferences.Editor editor = getSharedPreferences(MY_PREFS, MODE_PRIVATE).edit();
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         ActionBar actionBar = getSupportActionBar();
@@ -29,9 +29,8 @@ public class MainActivity extends AppCompatActivity {
         }
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        GUI gui = new GUI(this);
-        gui.init();
-
+        Game game=new Game(this);
+        game.initGame();
         if (!prefs.getBoolean("neverShowAgain", false)) showDialog(editor);
 
     }
