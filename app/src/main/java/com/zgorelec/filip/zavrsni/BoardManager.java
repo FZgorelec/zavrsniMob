@@ -12,12 +12,16 @@ public class BoardManager {
     private  Map<String, String> rightOrientations = new HashMap<>();
     private int numberOfFood=0;
     private int numberOfBombs=0;
-
+    private int boardXDim;
+    private int boardYDim;
+    private int animationDelay=200;
     public BoardManager(GameBoard gameBoard, MenuManager manager) {
         this.gameBoard = gameBoard;
         this.menuManager = manager;
         fillMaps();
         setListeners();
+        boardXDim=gameBoard.getXDim();
+        boardYDim=gameBoard.getYDim();
     }
 
     private void fillMaps() {
@@ -73,34 +77,34 @@ public class BoardManager {
         int antPositionY=0;
         Handler handler=new Handler();
         for (int i = 0; i < moves.length; i++) {
-            GameButton gameButtonAtCurrentPosition = gameBoard.getGameBoardCells()[antPositionX][antPositionY];
+            GameButton gameButtonAtCurrentPosition = gameBoard.getGameBoardCells()[antPositionY][antPositionX];
             String currentState=gameButtonAtCurrentPosition.getState();
             if(moves[i].equals("rotateLeft")){
 
-                gameButtonAtCurrentPosition.setState(leftOrientations.get(gameButtonAtCurrentPosition.getState()),handler,(i+1)*500);
+                gameButtonAtCurrentPosition.setState(leftOrientations.get(gameButtonAtCurrentPosition.getState()),handler,(i+1)*animationDelay);
             }
             else if(moves[i].equals("rotateRight")){
-                gameButtonAtCurrentPosition.setState(rightOrientations.get(gameButtonAtCurrentPosition.getState()),handler,(i+1)*500);
+                gameButtonAtCurrentPosition.setState(rightOrientations.get(gameButtonAtCurrentPosition.getState()),handler,(i+1)*animationDelay);
             }
             else if(moves[i].equals("moveForward")){
 
-                gameButtonAtCurrentPosition.setState("openField",handler,(i+1)*500);
+                gameButtonAtCurrentPosition.setState("openField",handler,(i+1)*animationDelay);
                 switch (currentState){
                     case "antLeft":
-                        if(!isWall(antPositionX, antPositionY))antPositionY=antPositionY-1;
+                        if(!isWall(antPositionX-1, antPositionY))antPositionX=antPositionX-1;
                         break;
                     case "antRight":
-                        if(!isWall(antPositionX, antPositionY))antPositionY=antPositionY+1;
+                        if(!isWall(antPositionX+1, antPositionY))antPositionX=antPositionX+1;
                         break;
                     case "antUp":
-                        if(!isWall(antPositionX, antPositionY))antPositionX=antPositionX-1;
+                        if(!isWall(antPositionX, antPositionY-1))antPositionY=antPositionY-1;
                         break;
                     case "antDown":
-                        if(!isWall(antPositionX, antPositionY))antPositionX=antPositionX+1;
+                        if(!isWall(antPositionX, antPositionY+1))antPositionY=antPositionY+1;
                         break;
                 }
 
-                gameBoard.getGameBoardCells()[antPositionX][antPositionY].setState(currentState,handler,(i+1)*500);
+                gameBoard.getGameBoardCells()[antPositionY][antPositionX].setState(currentState,handler,(i+1)*animationDelay);
             }
             else throw new UnsupportedOperationException();
 
@@ -118,7 +122,7 @@ public class BoardManager {
     }
 
     private boolean isWall(int x, int y){
-        return (gameBoard.getGameBoardCells()[x][y].getState().equals("wall"));
+        return (y<0||x<0||y>=boardYDim||x>=boardXDim||gameBoard.getGameBoardCells()[y][x].getState().equals("wall"));
     }
     private void setListeners() {
         GameButton[][] gameBoardCells = gameBoard.getGameBoardCells();

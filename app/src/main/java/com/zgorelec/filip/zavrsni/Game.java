@@ -2,21 +2,21 @@ package com.zgorelec.filip.zavrsni;
 
 import android.app.Dialog;
 import android.content.Context;
-import android.content.SharedPreferences;
-import android.util.DisplayMetrics;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.TextView;
 
 public class Game {
     private Context context;
     private GUI gui;
     private String[][] boardStateCopy;
-    private GeneticProgrammingAlgorithm algorithm=new GeneticProgrammingAlgorithm();
-    private String[] antMoves;
+    private SolutionAlgorithm algorithm;
+    private AlgorithmResult result;
     public Game(Context context){
         this.context=context;
         gui=new GUI(context);
+        algorithm=new SolutionAlgorithm();
         initGame();
     }
     public void initGame(){
@@ -26,7 +26,7 @@ public class Game {
     public void run(){
         boardStateCopy=gui.getBoardManager().boardState();
         preAlgorithmSetup();
-        antMoves=algorithm.run(boardStateCopy);
+        result=algorithm.run(boardStateCopy);
         showDialog();
         postAlgorithmSetup();
     }
@@ -53,12 +53,15 @@ public class Game {
         dialog.setContentView(R.layout.result_dialog);
         dialog.setTitle("About the game");
 
+        TextView resultTV=dialog.findViewById(R.id.resultTV);
         CheckBox resetCB = dialog.findViewById(R.id.resetMapCB);
         Button returnBtn = (Button) dialog.findViewById(R.id.returnBtn);
-        Button seeResultBtn = (Button) dialog.findViewById(R.id.returnBtn);
-
+        Button seeResultBtn = (Button) dialog.findViewById(R.id.seeResultBtn);
+        resultTV.setText("Vrijeme potrebno labirintu da pronade rjesenje je "+result.getTime()+" milisekundi i pronasao "+(int)(result.getFitness()+1)+" komada hrane");
         seeResultBtn.setOnClickListener((view -> {
-            gui.getBoardManager().moveAnt(antMoves);
+            gui.getBoardManager().moveAnt(result.getMoves());
+            dialog.setOnDismissListener((v)->{});
+            dialog.dismiss();
         }));
 
         returnBtn.setOnClickListener((v) -> {
