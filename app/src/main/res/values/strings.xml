@@ -9,4 +9,6 @@
         calculation you are given the time it took for the algorithm to crack the maze.
     </string>
     <string name="see_result">See Result</string>
+    <string name="returnBtnText">Return</string>
+    <string name="reset_map">Reset map</string>
 </resources>

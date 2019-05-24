@@ -29,6 +29,12 @@ public class MainActivity extends AppCompatActivity {
         }
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+
+        getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+        GUIUtils.displayWidth = (int) (displayMetrics.widthPixels * 0.8f);
+        GUIUtils.displayHeight = (int) (displayMetrics.heightPixels * 0.8f);
+
         Game game=new Game(this);
         game.initGame();
         if (!prefs.getBoolean("neverShowAgain", false)) showDialog(editor);
@@ -52,19 +58,14 @@ public class MainActivity extends AppCompatActivity {
 
         });
 
-        DisplayMetrics displayMetrics = new DisplayMetrics();
-
-        getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
 
         WindowManager.LayoutParams layoutParams = new WindowManager.LayoutParams();
         layoutParams.copyFrom(dialog.getWindow().getAttributes());
-        layoutParams.width = (int) (displayMetrics.widthPixels * 0.8f);
-        layoutParams.height = (int) (displayMetrics.heightPixels * 0.8f);
+        layoutParams.width = GUIUtils.displayWidth;
+        layoutParams.height = GUIUtils.displayHeight;
         dialog.getWindow().setAttributes(layoutParams);
 
         dialog.show();
-
-
     }
 
 }

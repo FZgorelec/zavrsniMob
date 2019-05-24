@@ -10,6 +10,8 @@ public class GUIUtils {
     static TableRow.LayoutParams imageButtonParameters = new TableRow.LayoutParams(0, TableRow.LayoutParams.MATCH_PARENT, 1);
     static TableRow.LayoutParams buttonParameters = new TableRow.LayoutParams(0, TableRow.LayoutParams.MATCH_PARENT, 1);
     static TableLayout.LayoutParams rowParameters = new TableLayout.LayoutParams(TableLayout.LayoutParams.WRAP_CONTENT, 0, 1);
+    static int displayWidth=0;
+    static int displayHeight=0;
 
 
     {
