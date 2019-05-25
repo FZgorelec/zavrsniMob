@@ -72,7 +72,7 @@ public class BoardManager {
         resetCounters();
     }
 
-    public void moveAnt(String[] moves){
+    public void moveAnt(String[] moves,Runnable runnable){
         int antPositionX=0;
         int antPositionY=0;
         Handler handler=new Handler();
@@ -80,15 +80,15 @@ public class BoardManager {
             GameButton gameButtonAtCurrentPosition = gameBoard.getGameBoardCells()[antPositionY][antPositionX];
             String currentState=gameButtonAtCurrentPosition.getState();
             if(moves[i].equals("rotateLeft")){
-
-                gameButtonAtCurrentPosition.setState(leftOrientations.get(gameButtonAtCurrentPosition.getState()),handler,(i+1)*animationDelay);
+                gameButtonAtCurrentPosition.setState(leftOrientations.get(currentState),handler,(i+1)*animationDelay);
             }
             else if(moves[i].equals("rotateRight")){
-                gameButtonAtCurrentPosition.setState(rightOrientations.get(gameButtonAtCurrentPosition.getState()),handler,(i+1)*animationDelay);
+                gameButtonAtCurrentPosition.setState(rightOrientations.get(currentState),handler,(i+1)*animationDelay);
             }
             else if(moves[i].equals("moveForward")){
+                int oldX=antPositionX;
+                int oldY=antPositionY;
 
-                gameButtonAtCurrentPosition.setState("openField",handler,(i+1)*animationDelay);
                 switch (currentState){
                     case "antLeft":
                         if(!isWall(antPositionX-1, antPositionY))antPositionX=antPositionX-1;
@@ -103,7 +103,7 @@ public class BoardManager {
                         if(!isWall(antPositionX, antPositionY+1))antPositionY=antPositionY+1;
                         break;
                 }
-
+                if(oldX!=antPositionX||oldY!=antPositionY)gameButtonAtCurrentPosition.setState("openField",handler,(i+1)*animationDelay);
                 gameBoard.getGameBoardCells()[antPositionY][antPositionX].setState(currentState,handler,(i+1)*animationDelay);
             }
             else throw new UnsupportedOperationException();
@@ -115,6 +115,7 @@ public class BoardManager {
 
 
         }
+        handler.postDelayed(runnable,(moves.length+3)*animationDelay);
     }
 
     private boolean isBomb(int x, int y) {

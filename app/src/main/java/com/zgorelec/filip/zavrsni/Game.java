@@ -41,11 +41,14 @@ public class Game {
     private void postAlgorithmSetup() {
         gui.getBoardManager().getGameBoard().enableGameBoard();
         gui.getMenuManager().getMenu().enableManagingMenu();
+        //todo obaviti sa handlerom
+        gui.getMenuManager().getMenu().getCalculationButton().setText("Calculate");
     }
 
     private void preAlgorithmSetup() {
         gui.getBoardManager().getGameBoard().disableGameBoard();
         gui.getMenuManager().getMenu().disableManagingMenu();
+        gui.getMenuManager().getMenu().getCalculationButton().setText("Calculating..");
     }
 
     private void showDialog() {
@@ -59,7 +62,16 @@ public class Game {
         Button seeResultBtn = (Button) dialog.findViewById(R.id.seeResultBtn);
         resultTV.setText("Vrijeme potrebno labirintu da pronade rjesenje je "+result.getTime()+" milisekundi i pronasao "+(int)(result.getFitness()+1)+" komada hrane");
         seeResultBtn.setOnClickListener((view -> {
-            gui.getBoardManager().moveAnt(result.getMoves());
+            gui.getBoardManager().moveAnt(result.getMoves(),() -> {
+                if (resetCB.isChecked()) {
+                    setEmptyMap();
+                }
+                else{
+                    resetBoard();
+                }
+                dialog.dismiss();
+
+            });
             dialog.setOnDismissListener((v)->{});
             dialog.dismiss();
         }));
