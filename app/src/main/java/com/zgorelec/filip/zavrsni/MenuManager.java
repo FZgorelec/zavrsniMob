@@ -18,10 +18,12 @@ public class MenuManager {
         for (MenuButton ib :menu.getBoardManagingButtons().values())
             ib.setOnClickListener((v) -> {
                 activeState=((MenuButton)v).getState();
-                System.out.println(activeState);
                 menu.updateBoardManagmentButtons((MenuButton)v);
             });
+
     }
+
+
 
     public void incrementButtonValue(String state){
         ((MenuButtonCounting)menu.getBoardManagingButtons().get(state)).incrementCount();

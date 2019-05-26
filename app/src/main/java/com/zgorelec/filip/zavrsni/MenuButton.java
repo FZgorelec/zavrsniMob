@@ -2,6 +2,7 @@ package com.zgorelec.filip.zavrsni;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.os.Handler;
 
 public class MenuButton extends android.support.v7.widget.AppCompatButton {
 
@@ -12,6 +13,10 @@ public class MenuButton extends android.support.v7.widget.AppCompatButton {
         super(context);
         this.state=state;
 
+    }
+
+    public void changeText(Handler handler,String text){
+        handler.post(() -> this.setText(text));
     }
 
     public String getState() {

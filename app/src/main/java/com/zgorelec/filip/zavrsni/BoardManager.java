@@ -163,6 +163,10 @@ public class BoardManager {
         }
     }
 
+    public int getNumberOfFood() {
+        return numberOfFood;
+    }
+
     public void resetCounters(){
         menuManager.resetButtonCounters();
         numberOfBombs=0;

@@ -14,10 +14,10 @@ public class SolutionAlgorithm {
         GenerationalGeneticAlgorithm<ITree> ga = new GenerationalGeneticAlgorithm<>(fact,
                 (ITree genome) -> {
                     return evaluator.evaluate(genome);
-                }, new GeneticAlgorithmParameters(24, 30000, 14.1));
+                }, new GeneticAlgorithmParameters(27, 30000, 14.1));
         GeneticProgrammingAlgorithm gpa = new GeneticProgrammingAlgorithm(ga, fact, 7, 200);
         long startTime = System.currentTimeMillis();
-        ITree tree = gpa.run(false);
+        ITree tree = gpa.run(true);
         long endTime = System.currentTimeMillis();
         long timeElapsed = endTime - startTime;
 
