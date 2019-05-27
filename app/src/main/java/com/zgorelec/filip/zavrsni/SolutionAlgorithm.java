@@ -10,19 +10,22 @@ public class SolutionAlgorithm {
     public AlgorithmResult run(String[][] boardState) {
         String[][] preparedBoardState = prepareBoard(boardState);
         MovementTreeFactory fact = new MovementTreeFactory(7, 200);
-        MovementTreeEvaluator evaluator = new MovementTreeEvaluator(preparedBoardState, 150);
+        MovementTreeEvaluator evaluator = new MovementTreeEvaluator(preparedBoardState, 250);
         GenerationalGeneticAlgorithm<ITree> ga = new GenerationalGeneticAlgorithm<>(fact,
                 (ITree genome) -> {
-                    return evaluator.evaluate(genome);
-                }, new GeneticAlgorithmParameters(27, 30000, 14.1));
+                    if(Thread.currentThread() instanceof EvaluatorThread)return ((EvaluatorThread)Thread.currentThread()).getEvaluator().evaluate(genome);
+                    else
+                        return evaluator.evaluate(genome);
+                }, new GeneticAlgorithmParameters(141, 5000, 14.1),0);
+        ga.setThreadFactory(new EvaluatorThreadFactory(preparedBoardState,250));
         GeneticProgrammingAlgorithm gpa = new GeneticProgrammingAlgorithm(ga, fact, 7, 200);
         long startTime = System.currentTimeMillis();
         ITree tree = gpa.run(true);
         long endTime = System.currentTimeMillis();
         long timeElapsed = endTime - startTime;
 
-        MovementDecoder decoder = new MovementDecoder(preparedBoardState, 150);
-        List<String> movements = decoder.treeToMovementList(tree, 150);
+        MovementDecoder decoder = new MovementDecoder(preparedBoardState, 250);
+        List<String> movements = decoder.treeToMovementList(tree, 250);
         String[] moves = new String[movements.size()];
         for (int i = 0; i < moves.length; i++) {
             switch (movements.get(i)) {
