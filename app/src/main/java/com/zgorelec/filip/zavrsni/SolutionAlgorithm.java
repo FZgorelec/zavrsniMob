@@ -16,7 +16,7 @@ public class SolutionAlgorithm {
                     if(Thread.currentThread() instanceof EvaluatorThread)return ((EvaluatorThread)Thread.currentThread()).getEvaluator().evaluate(genome);
                     else
                         return evaluator.evaluate(genome);
-                }, new GeneticAlgorithmParameters(141, 5000, 14.1),0);
+                }, new GeneticAlgorithmParameters(160, 4000, 14.1),0);
         ga.setThreadFactory(new EvaluatorThreadFactory(preparedBoardState,250));
         GeneticProgrammingAlgorithm gpa = new GeneticProgrammingAlgorithm(ga, fact, 7, 200);
         long startTime = System.currentTimeMillis();
