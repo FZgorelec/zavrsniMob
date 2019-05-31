@@ -5,7 +5,6 @@ import android.content.Context;
 import android.os.Handler;
 import android.view.WindowManager;
 import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.TextView;
 
 public class Game {
@@ -35,6 +34,7 @@ public class Game {
         });
     }
 
+
     public void run() {
         boardStateCopy = gui.getBoardManager().boardState();
         preAlgorithmSetup();
@@ -46,7 +46,7 @@ public class Game {
             e.printStackTrace();
         }
         showDialog();
-        postAlgorithmSetup();
+        //postAlgorithmSetup();
     }
 
     private void setEmptyMap() {
@@ -58,19 +58,20 @@ public class Game {
     }
 
     private void postAlgorithmSetup() {
-
-        gui.getBoardManager().getGameBoard().enableGameBoard();
-        gui.getMenuManager().getMenu().enableManagingMenu();
+        enableButtons();
         gui.getMenuManager().getMenu().getCalculationButton().changeText(handler, "Calculate");
-        //todo obaviti sa handlerom
+        resetBoard();
 
     }
 
-    private void preAlgorithmSetup() {
+    private void enableButtons() {
+        gui.getBoardManager().getGameBoard().enableGameBoard();
+        gui.getMenuManager().getMenu().enableManagingMenu();
+    }
 
+    private void preAlgorithmSetup() {
         gui.getBoardManager().getGameBoard().disableGameBoard();
         gui.getMenuManager().getMenu().disableManagingMenu();
-
     }
 
     private void showWarningDialog() {
@@ -82,10 +83,7 @@ public class Game {
         Button warningBtn = dialog.findViewById(R.id.text_ok_btn);
         warningBtn.setOnClickListener((v) -> dialog.dismiss());
         WindowManager.LayoutParams layoutParams = new WindowManager.LayoutParams();
-        layoutParams.copyFrom(dialog.getWindow().getAttributes());
-        layoutParams.width = GUIUtils.displayWidth;
-        layoutParams.height = GUIUtils.displayHeight;
-        dialog.getWindow().setAttributes(layoutParams);
+        GUIUtils.setupDialog(dialog, layoutParams);
         dialog.show();
     }
 
@@ -95,47 +93,61 @@ public class Game {
         dialog.setTitle("Game results");
 
         TextView resultTV = dialog.findViewById(R.id.resultTV);
-        CheckBox resetCB = dialog.findViewById(R.id.resetMapCB);
         Button returnBtn = (Button) dialog.findViewById(R.id.returnBtn);
         Button seeResultBtn = (Button) dialog.findViewById(R.id.seeResultBtn);
-        resultTV.setText("The time it took for the ant to calculate the solution is " + result.getTime()/1000 + " seconds and it found " + (int) (result.getFitness() + 1) + " pieces of food");
+        Button saveResultBtn=dialog.findViewById(R.id.sendResultBtn);
+        resultTV.setText("The time it took for the ant to calculate the solution is " + result.getTime() / 1000 + " seconds and it found " + (int) (result.getFitness() + 1) + " pieces of food");
+        dialog.setOnCancelListener(dialogInterface -> postAlgorithmSetup());
         seeResultBtn.setOnClickListener((view -> {
-            gui.getBoardManager().moveAnt(result.getMoves(), () -> {
-                if (resetCB.isChecked()) {
-                    setEmptyMap();
-                } else {
-                    resetBoard();
-                }
-                dialog.dismiss();
-
+            preAlgorithmSetup();
+            gui.getMenuManager().getMenu().getCalculationButton().setText("Cancel");
+            gui.getMenuManager().getMenu().getCalculationButton().setEnabled(true);
+            gui.getMenuManager().getMenu().getCalculationButton().setOnClickListener((v) -> {
+                handler.removeCallbacksAndMessages(null);
+                resetBoard();
+                showDialog();
             });
-            dialog.setOnDismissListener((v) -> {
-            });
+            Thread animation = new Thread(() -> gui.getBoardManager().moveAnt(result.getMoves(), handler, () -> {
+                resetBoard();
+                showDialog();
+            }));
+            animation.start();
             dialog.dismiss();
         }));
-
-        returnBtn.setOnClickListener((v) -> {
-            if (resetCB.isChecked()) {
-                setEmptyMap();
-            } else {
-                resetBoard();
-            }
-            dialog.dismiss();
-
+        saveResultBtn.setOnClickListener(view -> {
+            ResultSavingDialog resultSavingDialog=new ResultSavingDialog(context,gui.getBoardManager(),getResultRepresentation());
+            resultSavingDialog.show();
         });
-        dialog.setOnDismissListener((v) -> {
-            if (resetCB.isChecked()) {
-                setEmptyMap();
-            } else {
-                resetBoard();
-            }
+        returnBtn.setOnClickListener((v) -> {
+            dialog.dismiss();
+            gui.getMenuManager().getMenu().getCalculationButton().setOnClickListener(view -> {
+                if (gui.getBoardManager().getNumberOfFood() != 15) showWarningDialog();
+                else {
+                    ((MenuButton) view).setText("Calculating..");
+                    handler.postDelayed(() -> run(), 200);
+                }
+            });
+            postAlgorithmSetup();
         });
 
         WindowManager.LayoutParams layoutParams = new WindowManager.LayoutParams();
-        layoutParams.copyFrom(dialog.getWindow().getAttributes());
-        layoutParams.width = GUIUtils.displayWidth;
-        layoutParams.height = GUIUtils.displayHeight;
-        dialog.getWindow().setAttributes(layoutParams);
+        GUIUtils.setupDialog(dialog, layoutParams);
         dialog.show();
     }
+
+    private String getResultRepresentation(){
+        StringBuilder sb=new StringBuilder();
+        sb.append("For map:\n");
+        String[][] map=gui.getBoardManager().boardState();
+        for (String[] row:map) {
+            sb.append("||");
+            for (String cell:row) {
+                sb.append(cell+" ");
+            }
+            sb.append("||\n");
+        }
+        sb.append("\n"+result.toString());
+        return sb.toString();
+    }
 }
+

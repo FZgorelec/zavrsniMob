@@ -7,6 +7,8 @@ import android.content.Context;
 import android.view.WindowManager;
 import android.widget.*;
 
+import java.io.*;
+
 
 public class GUI {
     private Context context;
@@ -33,26 +35,36 @@ public class GUI {
         table.addView(managingMenu.initManagingTR());
         linearLayout.addView(table);
         ((Activity) context).setContentView(linearLayout);
-        menuManager=new MenuManager(managingMenu);
+        menuManager=new MenuManager(managingMenu,context);
         boardManager=new BoardManager(gameBoard, menuManager);
-        menuManager.getMenu().getAboutButton().setOnClickListener((v)->showAboutDialog());
+        menuManager.getMenu().getAboutButton().setOnClickListener(view -> showSettingsDialog());
     }
 
-    private void showAboutDialog() {
-            final Dialog dialog = new Dialog(context);
-            dialog.setContentView(R.layout.text_ok_dialog);
-            dialog.setTitle("About the game");
-            TextView text_ok_TV = dialog.findViewById(R.id.text_ok_TV);
-            text_ok_TV.setText(R.string.game_explanation);
-            Button text_ok_btn = dialog.findViewById(R.id.text_ok_btn);
-            text_ok_btn.setOnClickListener((v) -> dialog.dismiss());
-            WindowManager.LayoutParams layoutParams = new WindowManager.LayoutParams();
-            layoutParams.copyFrom(dialog.getWindow().getAttributes());
-            layoutParams.width = GUIUtils.displayWidth;
-            layoutParams.height = GUIUtils.displayHeight;
-            dialog.getWindow().setAttributes(layoutParams);
-            dialog.show();
+    private void showSettingsDialog() {
+        final Dialog dialog = new Dialog(context);
+        dialog.setContentView(R.layout.settings_dialog);
+        dialog.setTitle("Settings");
+        WindowManager.LayoutParams layoutParams = new WindowManager.LayoutParams();
+        GUIUtils.setupDialog(dialog,layoutParams);
+        Button clearBtn=dialog.findViewById(R.id.clearMapBtn);
+        clearBtn.setOnClickListener((v)->boardManager.emptyBoard());
+        Button saveBtn=dialog.findViewById(R.id.saveBtn);
+        saveBtn.setOnClickListener((v)->showSaveDialog());
+        Button loadBtn=dialog.findViewById(R.id.loadBtn);
+        loadBtn.setOnClickListener((v)->showLoadDialog());
+        Button aboutBtn=dialog.findViewById(R.id.aboutBtn);
+        aboutBtn.setOnClickListener(view -> menuManager.showAboutDialog());
+        dialog.show();
+    }
 
+    private void showSaveDialog() {
+        SaveDialog dialog=new SaveDialog(context,boardManager);
+        dialog.show();
+    }
+
+    private void showLoadDialog() {
+        LoadDialog dialog=new LoadDialog(context,boardManager);
+        dialog.show();
     }
 
     public MenuManager getMenuManager() {

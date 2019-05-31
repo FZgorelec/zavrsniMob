@@ -2,26 +2,28 @@ package com.zgorelec.filip.zavrsni;
 
 
 import android.os.Handler;
+
 import java.util.HashMap;
 import java.util.Map;
 
 public class BoardManager {
     private GameBoard gameBoard;
     private MenuManager menuManager;
-    private  Map<String, String> leftOrientations = new HashMap<>();
-    private  Map<String, String> rightOrientations = new HashMap<>();
-    private int numberOfFood=0;
-    private int numberOfBombs=0;
+    private Map<String, String> leftOrientations = new HashMap<>();
+    private Map<String, String> rightOrientations = new HashMap<>();
+    private int numberOfFood = 0;
+    private int numberOfBombs = 0;
     private int boardXDim;
     private int boardYDim;
-    private int animationDelay=200;
+    private int animationDelay = 200;
+
     public BoardManager(GameBoard gameBoard, MenuManager manager) {
         this.gameBoard = gameBoard;
         this.menuManager = manager;
         fillMaps();
         setListeners();
-        boardXDim=gameBoard.getXDim();
-        boardYDim=gameBoard.getYDim();
+        boardXDim = gameBoard.getXDim();
+        boardYDim = gameBoard.getYDim();
     }
 
     private void fillMaps() {
@@ -56,6 +58,18 @@ public class BoardManager {
         return boardState;
     }
 
+    void updateFoodBombCount(){
+        numberOfFood=0;
+        numberOfBombs=0;
+        for (int i = 0,lenY=gameBoard.getYDim(); i < lenY ; i++) {
+            for (int j = 0,lenX=gameBoard.getXDim(); j <lenX; j++) {
+                if(gameBoard.getGameBoardCells()[i][j].getState().equals("food"))numberOfFood++;
+                else if(gameBoard.getGameBoardCells()[i][j].getState().equals("bomb"))numberOfBombs++;
+            }
+        }
+        menuManager.setCounters(15-numberOfFood,3-numberOfBombs);
+    }
+
     public void fillMap(String[][] map) {
         GameButton[][] gameBoardCells = gameBoard.getGameBoardCells();
         int gameBoardHeight = gameBoardCells.length;
@@ -67,46 +81,43 @@ public class BoardManager {
         }
     }
 
-    public void emptyBoard(){
+    public void emptyBoard() {
         gameBoard.emptyBoard();
         resetCounters();
     }
 
-    public void moveAnt(String[] moves,Runnable runnable){
-        int antPositionX=0;
-        int antPositionY=0;
-        Handler handler=new Handler();
+    public void moveAnt(String[] moves, Handler handler, Runnable runnable) {
+        int antPositionX = 0;
+        int antPositionY = 0;
         for (int i = 0; i < moves.length; i++) {
             GameButton gameButtonAtCurrentPosition = gameBoard.getGameBoardCells()[antPositionY][antPositionX];
-            String currentState=gameButtonAtCurrentPosition.getState();
-            if(moves[i].equals("rotateLeft")){
-                gameButtonAtCurrentPosition.setState(leftOrientations.get(currentState),handler,(i+1)*animationDelay);
-            }
-            else if(moves[i].equals("rotateRight")){
-                gameButtonAtCurrentPosition.setState(rightOrientations.get(currentState),handler,(i+1)*animationDelay);
-            }
-            else if(moves[i].equals("moveForward")){
-                int oldX=antPositionX;
-                int oldY=antPositionY;
+            String currentState = gameButtonAtCurrentPosition.getState();
+            if (moves[i].equals("rotateLeft")) {
+                gameButtonAtCurrentPosition.setState(leftOrientations.get(currentState), handler, (i + 1) * animationDelay);
+            } else if (moves[i].equals("rotateRight")) {
+                gameButtonAtCurrentPosition.setState(rightOrientations.get(currentState), handler, (i + 1) * animationDelay);
+            } else if (moves[i].equals("moveForward")) {
+                int oldX = antPositionX;
+                int oldY = antPositionY;
 
-                switch (currentState){
+                switch (currentState) {
                     case "antLeft":
-                        if(!isWall(antPositionX-1, antPositionY))antPositionX=antPositionX-1;
+                        if (!isWall(antPositionX - 1, antPositionY)) antPositionX = antPositionX - 1;
                         break;
                     case "antRight":
-                        if(!isWall(antPositionX+1, antPositionY))antPositionX=antPositionX+1;
+                        if (!isWall(antPositionX + 1, antPositionY)) antPositionX = antPositionX + 1;
                         break;
                     case "antUp":
-                        if(!isWall(antPositionX, antPositionY-1))antPositionY=antPositionY-1;
+                        if (!isWall(antPositionX, antPositionY - 1)) antPositionY = antPositionY - 1;
                         break;
                     case "antDown":
-                        if(!isWall(antPositionX, antPositionY+1))antPositionY=antPositionY+1;
+                        if (!isWall(antPositionX, antPositionY + 1)) antPositionY = antPositionY + 1;
                         break;
                 }
-                if(oldX!=antPositionX||oldY!=antPositionY)gameButtonAtCurrentPosition.setState("openField",handler,(i+1)*animationDelay);
-                gameBoard.getGameBoardCells()[antPositionY][antPositionX].setState(currentState,handler,(i+1)*animationDelay);
-            }
-            else throw new UnsupportedOperationException();
+                if (oldX != antPositionX || oldY != antPositionY)
+                    gameButtonAtCurrentPosition.setState("openField", handler, (i + 1) * animationDelay);
+                gameBoard.getGameBoardCells()[antPositionY][antPositionX].setState(currentState, handler, (i + 1) * animationDelay);
+            } else throw new UnsupportedOperationException();
 
 
 //            if(isBomb(antPositionX,antPositionY)){
@@ -115,16 +126,17 @@ public class BoardManager {
 
 
         }
-        handler.postDelayed(runnable,(moves.length+3)*animationDelay);
+        handler.postDelayed(runnable, (moves.length + 3) * animationDelay);
     }
 
     private boolean isBomb(int x, int y) {
         return false;
     }
 
-    private boolean isWall(int x, int y){
-        return (y<0||x<0||y>=boardYDim||x>=boardXDim||gameBoard.getGameBoardCells()[y][x].getState().equals("wall"));
+    private boolean isWall(int x, int y) {
+        return (y < 0 || x < 0 || y >= boardYDim || x >= boardXDim || gameBoard.getGameBoardCells()[y][x].getState().equals("wall"));
     }
+
     private void setListeners() {
         GameButton[][] gameBoardCells = gameBoard.getGameBoardCells();
         for (int i = 0; i < gameBoard.getYDim(); i++) {
@@ -134,28 +146,25 @@ public class BoardManager {
                     continue;
                 }
                 gameBoardCells[i][j].setOnClickListener(v -> {
-                    String previousState=((GameButton) v).getState();
-                    if(previousState.equals("food")&&!(menuManager.getActiveState().equals("bomb")&&numberOfBombs>=3)){
+                    String previousState = ((GameButton) v).getState();
+                    if (previousState.equals("food") && !(menuManager.getActiveState().equals("bomb") && numberOfBombs >= 3)) {
                         numberOfFood--;
                         menuManager.incrementButtonValue("food");
 
-                    }
-                    else if(previousState.equals("bomb")&&!(menuManager.getActiveState().equals("food")&&numberOfFood>=15)){
+                    } else if (previousState.equals("bomb") && !(menuManager.getActiveState().equals("food") && numberOfFood >= 15)) {
                         numberOfBombs--;
                         menuManager.incrementButtonValue("bomb");
                     }
 
-                    if(menuManager.getActiveState().equals("food")&&numberOfFood<15){
+                    if (menuManager.getActiveState().equals("food") && numberOfFood < 15) {
                         numberOfFood++;
                         menuManager.decrementButtonValue("food");
-                    }
-                    else if(menuManager.getActiveState().equals("bomb")&&numberOfBombs<3){
+                    } else if (menuManager.getActiveState().equals("bomb") && numberOfBombs < 3) {
                         numberOfBombs++;
                         menuManager.decrementButtonValue("bomb");
-                    }
-                    else if(menuManager.getActiveState().equals("food")&&numberOfFood>=15)return;
+                    } else if (menuManager.getActiveState().equals("food") && numberOfFood >= 15) return;
 
-                    else if(menuManager.getActiveState().equals("bomb")&&numberOfBombs>=3)return;
+                    else if (menuManager.getActiveState().equals("bomb") && numberOfBombs >= 3) return;
 
                     ((GameButton) v).setState(menuManager.getActiveState());
                 });
@@ -163,13 +172,16 @@ public class BoardManager {
         }
     }
 
+
     public int getNumberOfFood() {
         return numberOfFood;
     }
 
-    public void resetCounters(){
+
+
+    public void resetCounters() {
         menuManager.resetButtonCounters();
-        numberOfBombs=0;
-        numberOfFood=0;
+        numberOfBombs = 0;
+        numberOfFood = 0;
     }
 }

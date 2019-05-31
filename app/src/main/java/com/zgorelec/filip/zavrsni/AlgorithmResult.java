@@ -22,4 +22,19 @@ public class AlgorithmResult {
     public double getTime() {
         return time;
     }
+
+
+    @Override
+    public String toString() {
+        StringBuilder sb=new StringBuilder();
+        sb.append("Time needed for calculation: "+time/1000+" seconds\n");
+        int foodEaten=(int)fitness+1;
+        sb.append("Food eaten: "+foodEaten+"\n");
+        sb.append("Actions taken: ");
+        for (String move:moves) {
+            sb.append(move+" ");
+        }
+        sb.append("\n");
+        return sb.toString();
+    }
 }

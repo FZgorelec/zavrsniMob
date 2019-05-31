@@ -8,20 +8,20 @@ public class GameBoard {
     private Context context;
 
     public GameBoard(Context context) {
-        this.context=context;
+        this.context = context;
     }
 
     public TableRow[] initGameBoard() {
-        int numberOfButtons=20;
-        int numberOfRows=9;
+        int numberOfButtons = 20;
+        int numberOfRows = 9;
         TableRow[] tableRows = new TableRow[numberOfRows];
         for (int i = 0; i < numberOfRows; i++) {
             tableRows[i] = new TableRow(context);
             tableRows[i].setLayoutParams(GUIUtils.rowParameters);
             for (int j = 0; j < numberOfButtons; j++) {
-                GameButton gameButton=new GameButton(context, "openField");
+                GameButton gameButton = new GameButton(context, "openField");
                 GUIUtils.buttonSetup(gameButton);
-                gameBoardCells[i][j]=gameButton;
+                gameBoardCells[i][j] = gameButton;
                 tableRows[i].addView(gameButton);
             }
         }
@@ -31,29 +31,33 @@ public class GameBoard {
     public GameButton[][] getGameBoardCells() {
         return gameBoardCells;
     }
-    public void disableGameBoard(){
+
+    public void disableGameBoard() {
         changeStateOfButtons(false);
     }
 
-    public void enableGameBoard(){
+    public void enableGameBoard() {
         changeStateOfButtons(true);
     }
-    private void changeStateOfButtons(boolean state){
-        for (GameButton[] row:gameBoardCells) {
+
+    private void changeStateOfButtons(boolean state) {
+        for (GameButton[] row : gameBoardCells) {
             for (GameButton button : row) {
                 button.setEnabled(state);
             }
         }
     }
-    public int getXDim(){
+
+    public int getXDim() {
         return 20;
     }
-    public int getYDim(){
+
+    public int getYDim() {
         return 9;
     }
 
     public void emptyBoard() {
-        for (GameButton[] row:gameBoardCells) {
+        for (GameButton[] row : gameBoardCells) {
             for (GameButton button : row) {
                 button.setState("openField");
             }

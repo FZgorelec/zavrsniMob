@@ -1,6 +1,8 @@
 package com.zgorelec.filip.zavrsni;
 
+import android.app.Dialog;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.*;
 
 import java.util.HashMap;
@@ -10,8 +12,8 @@ public class GUIUtils {
     static TableRow.LayoutParams imageButtonParameters = new TableRow.LayoutParams(0, TableRow.LayoutParams.MATCH_PARENT, 1);
     static TableRow.LayoutParams buttonParameters = new TableRow.LayoutParams(0, TableRow.LayoutParams.MATCH_PARENT, 1);
     static TableLayout.LayoutParams rowParameters = new TableLayout.LayoutParams(TableLayout.LayoutParams.WRAP_CONTENT, 0, 1);
-    static int displayWidth=0;
-    static int displayHeight=0;
+    static int displayWidth = 0;
+    static int displayHeight = 0;
 
 
     {
@@ -21,7 +23,6 @@ public class GUIUtils {
         buttonParameters.setMargins(0, 0, 0, 0);
         rowParameters.weight = 1;
         rowParameters.setMargins(0, 0, 0, 0);
-
 
 
     }
@@ -39,7 +40,6 @@ public class GUIUtils {
     }
 
 
-
     static void buttonSetup(ImageButton button) {
         button.setLayoutParams(imageButtonParameters);
         button.setScaleType(ImageView.ScaleType.FIT_CENTER);
@@ -54,6 +54,13 @@ public class GUIUtils {
         button.setTextColor(0xab100707);
         button.setPadding(-4, -4, -4, -4);
         button.setVisibility(View.VISIBLE);
+    }
+
+    static void setupDialog(Dialog dialog, WindowManager.LayoutParams layoutParams) {
+        layoutParams.copyFrom(dialog.getWindow().getAttributes());
+        layoutParams.width = GUIUtils.displayWidth;
+        layoutParams.height = GUIUtils.displayHeight;
+        dialog.getWindow().setAttributes(layoutParams);
     }
 
 }

@@ -46,7 +46,7 @@ public class ManagingMenu {
         calculationButton.setBackgroundResource(R.drawable.menu_button_background);
         aboutButton.setBackgroundResource(R.drawable.menu_button_background);
         calculationButton.setText("Calculate");
-        aboutButton.setText("About");
+        aboutButton.setText("Settings");
         calculationButton.setTypeface(null, Typeface.NORMAL);
         aboutButton.setTypeface(null, Typeface.NORMAL);
 
