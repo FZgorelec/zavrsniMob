@@ -7,6 +7,8 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.TextView;
 
+import java.util.List;
+
 public class Game {
     private Context context;
     private GUI gui;
@@ -96,6 +98,7 @@ public class Game {
         Button returnBtn = (Button) dialog.findViewById(R.id.returnBtn);
         Button seeResultBtn = (Button) dialog.findViewById(R.id.seeResultBtn);
         Button saveResultBtn=dialog.findViewById(R.id.sendResultBtn);
+        Button compressedResultBtn=dialog.findViewById(R.id.seeCompressedResultBtn);
         resultTV.setText("The time it took for the ant to calculate the solution is " + result.getTime() / 1000 + " seconds and it found " + (int) (result.getFitness() + 1) + " pieces of food");
         dialog.setOnCancelListener(dialogInterface -> postAlgorithmSetup());
         seeResultBtn.setOnClickListener((view -> {
@@ -114,10 +117,20 @@ public class Game {
             animation.start();
             dialog.dismiss();
         }));
+
+        compressedResultBtn.setOnClickListener(view -> {
+            gui.getBoardManager().moveAnt(algorithm.getCompressedResult(), handler, () -> {
+                resetBoard();
+                showDialog();
+            });
+            dialog.dismiss();
+        });
+
         saveResultBtn.setOnClickListener(view -> {
             ResultSavingDialog resultSavingDialog=new ResultSavingDialog(context,gui.getBoardManager(),getResultRepresentation());
             resultSavingDialog.show();
         });
+
         returnBtn.setOnClickListener((v) -> {
             dialog.dismiss();
             gui.getMenuManager().getMenu().getCalculationButton().setOnClickListener(view -> {

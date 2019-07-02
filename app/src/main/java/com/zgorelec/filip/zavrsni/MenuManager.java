@@ -30,7 +30,7 @@ public class MenuManager {
     }
 
 
-    public void showAboutDialog() {
+    public void showAboutDialog(Context context) {
         final Dialog dialog = new Dialog(context);
         dialog.setContentView(R.layout.text_ok_dialog);
         dialog.setTitle("About the game");

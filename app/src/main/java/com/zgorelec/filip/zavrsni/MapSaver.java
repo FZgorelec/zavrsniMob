@@ -11,14 +11,9 @@ public class MapSaver {
         this.context=context;
     }
     void save(String[][] map,String mapName){
-        try{
-            File file = new File(context.getFilesDir(), mapName);
-            FileOutputStream fileOut =
-                    new FileOutputStream(file);
-            ObjectOutputStream out = new ObjectOutputStream(fileOut);
+        File file = new File(context.getFilesDir(), mapName);
+        try(ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(file))){
             out.writeObject(map);
-            out.close();
-            fileOut.close();
             Toast.makeText(context,"Map has been saved",Toast.LENGTH_SHORT).show();
         }catch (FileNotFoundException ex){
             Toast.makeText(context,"File could not be created",Toast.LENGTH_SHORT).show();

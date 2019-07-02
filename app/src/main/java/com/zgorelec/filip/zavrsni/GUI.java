@@ -53,7 +53,7 @@ public class GUI {
         Button loadBtn=dialog.findViewById(R.id.loadBtn);
         loadBtn.setOnClickListener((v)->showLoadDialog());
         Button aboutBtn=dialog.findViewById(R.id.aboutBtn);
-        aboutBtn.setOnClickListener(view -> menuManager.showAboutDialog());
+        aboutBtn.setOnClickListener(view -> menuManager.showAboutDialog(context));
         dialog.show();
     }
 

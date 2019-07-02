@@ -23,17 +23,21 @@ public class ResultSaver {
 
     public void save(String data, String resultFileName) {
         checkPermission();
+
+
         if (permissionResult == 0) {
+            File file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS), resultFileName+".txt");
+            boolean filecreated = false;
             try {
-                File file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS), resultFileName+".txt");
-                boolean filecreated = file.createNewFile();
-                System.out.println(filecreated);
+                filecreated = file.createNewFile();
+            } catch (IOException e) {
+                //Toast.makeText(context, "Error with file creation", Toast.LENGTH_SHORT).show();
+            }
+            try(FileWriter outputStream = new FileWriter(file)) {
                 int a = 5;
                 if (filecreated) {
-                    FileWriter outputStream = new FileWriter(file);
                     outputStream.write(data);
                     outputStream.flush();
-                    outputStream.close();
                     Toast.makeText(context, "File saved", Toast.LENGTH_SHORT).show();
                 } else {
                     Toast.makeText(context, "File with that name already exists", Toast.LENGTH_SHORT).show();

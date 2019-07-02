@@ -7,6 +7,8 @@ import util.GeneticAlgorithmParameters;
 import java.util.List;
 
 public class SolutionAlgorithm {
+    private MovementDecoder decoder;
+    private List<String> movements;
     public AlgorithmResult run(String[][] boardState) {
         String[][] preparedBoardState = prepareBoard(boardState);
         MovementTreeFactory fact = new MovementTreeFactory(7, 200);
@@ -16,16 +18,16 @@ public class SolutionAlgorithm {
                     if(Thread.currentThread() instanceof EvaluatorThread)return ((EvaluatorThread)Thread.currentThread()).getEvaluator().evaluate(genome);
                     else
                         return evaluator.evaluate(genome);
-                }, new GeneticAlgorithmParameters(160, 4000, 14.1),0);
+                }, new GeneticAlgorithmParameters(160, 3500, 14.1),0);//4000
         ga.setThreadFactory(new EvaluatorThreadFactory(preparedBoardState,250));
-        GeneticProgrammingAlgorithm gpa = new GeneticProgrammingAlgorithm(ga, fact, 7, 200);
+        GeneticProgrammingAlgorithm gpa = new GeneticProgrammingAlgorithm(ga, fact, 7, 200,13);
         long startTime = System.currentTimeMillis();
         ITree tree = gpa.run(true);
         long endTime = System.currentTimeMillis();
         long timeElapsed = endTime - startTime;
 
-        MovementDecoder decoder = new MovementDecoder(preparedBoardState, 250);
-        List<String> movements = decoder.treeToMovementList(tree, 250);
+        decoder = new MovementDecoder(preparedBoardState, 250);
+        movements = decoder.treeToMovementList(tree, 250);
         String[] moves = new String[movements.size()];
         for (int i = 0; i < moves.length; i++) {
             switch (movements.get(i)) {
@@ -41,6 +43,25 @@ public class SolutionAlgorithm {
             }
         }
         return new AlgorithmResult(moves, tree.getFitness(),timeElapsed);
+    }
+
+    public String[] getCompressedResult(){
+        List<String> compressedMovesList=decoder.removeCycles(movements);
+        String[] moves = new String[compressedMovesList.size()];
+        for (int i = 0; i < moves.length; i++) {
+            switch (compressedMovesList.get(i)) {
+                case "MOVE":
+                    moves[i] = "moveForward";
+                    break;
+                case "ROTATE_RIGHT":
+                    moves[i] = "rotateRight";
+                    break;
+                case "ROTATE_LEFT":
+                    moves[i] = "rotateLeft";
+                    break;
+            }
+        }
+        return moves;
     }
 
     public String[][] prepareBoard(String[][] boardState) {

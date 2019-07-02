@@ -7,6 +7,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 
 import java.io.*;
@@ -46,6 +47,10 @@ public class LoadDialog extends Dialog {
 
         loadBtn.setOnClickListener((v)->{
             MapLoader loader=new MapLoader(context);
+            if(selectedMapTV.getText().toString().isEmpty()){
+                Toast.makeText(context,"Niste odabrali nijednu mapu",Toast.LENGTH_SHORT).show();
+                return;
+            }
             String[][] map=loader.load(selectedMapTV.getText().toString());
             if(map!=null){
                 manager.fillMap(map);
@@ -54,7 +59,12 @@ public class LoadDialog extends Dialog {
         });
         deleteBtn.setOnClickListener((v)->{
             MapDeleter deleter=new MapDeleter(context);
+            if(selectedMapTV.getText().toString().isEmpty()){
+                Toast.makeText(context,"Niste odabrali nijednu mapu",Toast.LENGTH_SHORT).show();
+                return;
+            }
             deleter.deleteMap(selectedMapTV.getText().toString());
+            mapAdapter.notifyDataSetChanged();
         });
     }
 

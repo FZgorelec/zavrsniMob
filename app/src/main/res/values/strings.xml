@@ -19,7 +19,7 @@
     <string name="load_map">Load map</string>
     <string name="about">About</string>
     <string name="compresed_res">See compressed result</string>
-    <string name="send_result">Send result</string>
+    <string name="send_result">Save result</string>
     <string name="e_mail">E-mail:</string>
     <string name="save">Save</string>
     <string name="map_name">Name:</string>
